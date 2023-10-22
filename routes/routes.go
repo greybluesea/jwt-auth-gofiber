@@ -1,6 +1,8 @@
 package routes
 
 import (
+	//"fmt"
+	"os"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,7 +45,9 @@ func SetupRoutes(app *fiber.App) {
 			return result.Error
 		}
 
-		token, exp, err := createJWTToken(&user)
+		//fmt.Println(result)
+
+		token, exp, err := createJWTTokenSTr(&user)
 		if err != nil {
 			return err
 		}
@@ -62,16 +66,30 @@ func SetupRoutes(app *fiber.App) {
 
 }
 
-func createJWTToken(user *models.User) (string, int64, error) {
+func createJWTTokenSTr(user *models.User) (string, int64, error) {
+	// Calculate the expiration time for the JWT token (30 minutes from now)
 	exp := time.Now().Add(time.Minute * 30).Unix()
+
+	// Create a new JWT token with the HS256 signing method
 	token := jwt.New(jwt.SigningMethodHS256)
+
+	// Extract the claims from the token (claims contain the payload of the JWT)
 	claims := token.Claims.(jwt.MapClaims)
+
+	// Set the "user_id" claim in the JWT payload to the user's ID
 	claims["user_id"] = user.ID
+
+	// Set the "exp" claim in the JWT payload to the expiration time
 	claims["exp"] = exp
-	t, err := token.SignedString([]byte("secret"))
+
+	// Sign the JWT token using a secret key and get the token string
+	tokenStr, err := token.SignedString([]byte(os.Getenv("SECRET")))
+
+	// If there's an error while signing the token, return an error
 	if err != nil {
 		return "", 0, err
 	}
 
-	return t, exp, nil
+	// Return the JWT token string, expiration time, and no error
+	return tokenStr, exp, nil
 }
