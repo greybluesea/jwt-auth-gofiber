@@ -2,23 +2,23 @@ package routes
 
 import (
 	//"fmt"
+	"log"
 	"os"
 	"time"
 
+	//	"github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v4"
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/greybluesea/jwt-auth-gofiber/database"
 	"github.com/greybluesea/jwt-auth-gofiber/models"
 	"golang.org/x/crypto/bcrypt"
 )
 
-func SetupRoutes(app *fiber.App) {
+func SetAuthRoutes(app *fiber.App) {
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, welcome to the JWT auth GoFiber server")
-	})
+	groupAuth := app.Group("/auth")
 
-	app.Post("/signup", func(c *fiber.Ctx) error {
+	groupAuth.Post("/signup", func(c *fiber.Ctx) error {
 		signup := new(models.SignupRequest)
 		if err := c.BodyParser(&signup); err != nil {
 			return err
@@ -45,15 +45,20 @@ func SetupRoutes(app *fiber.App) {
 			return result.Error
 		}
 
-		token, exp, err := createJWTTokenSTr(&user)
+		token, err := createJWTTokenSTr(&user)
 		if err != nil {
 			return err
 		}
 
-		return c.JSON(fiber.Map{"token": token, "exp": exp, "user": user})
+		/* 	c.Cookie(&fiber.Cookie{
+			Name:  "jwt",
+			Value: token,
+		}) */
+
+		return c.JSON(fiber.Map{"token": token})
 	})
 
-	app.Post("/login", func(c *fiber.Ctx) error {
+	groupAuth.Post("/login", func(c *fiber.Ctx) error {
 		login := models.LoginRequest{}
 		if err := c.BodyParser(&login); err != nil {
 			return err
@@ -73,44 +78,39 @@ func SetupRoutes(app *fiber.App) {
 			return err
 		}
 
-		token, exp, err := createJWTTokenSTr(&user)
+		token, err := createJWTTokenSTr(&user)
 		if err != nil {
 			return err
 		}
 
-		return c.JSON(fiber.Map{"token": token, "exp": exp, "user": user})
-	})
-
-	app.Get("/private", func(c *fiber.Ctx) error {
-		return nil
+		/* c.Cookie(&fiber.Cookie{
+			Name:  "jwt",
+			Value: token,
+		})
+		*/
+		return c.JSON(fiber.Map{"token": token})
 	})
 
 }
 
-func createJWTTokenSTr(user *models.User) (string, int64, error) {
-	// Calculate the expiration time for the JWT token (30 minutes from now)
-	exp := time.Now().Add(time.Minute * 30).Unix()
+func createJWTTokenSTr(user *models.User) (string, error) {
+
+	claims := jwt.MapClaims{
+		"name": user.Name,
+		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+	}
 
 	// Create a new JWT token with the HS256 signing method
-	token := jwt.New(jwt.SigningMethodHS256)
-
-	// Extract the claims from the token (claims contain the payload of the JWT)
-	claims := token.Claims.(jwt.MapClaims)
-
-	// Set the "user_id" claim in the JWT payload to the user's ID
-	claims["user_id"] = user.ID
-
-	// Set the "exp" claim in the JWT payload to the expiration time
-	claims["exp"] = exp
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
 	// Sign the JWT token using a secret key and get the token string
 	tokenStr, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
 	// If there's an error while signing the token, return an error
 	if err != nil {
-		return "", 0, err
+		log.Fatal("token.SignedString: %w", err)
 	}
 
 	// Return the JWT token string, expiration time, and no error
-	return tokenStr, exp, nil
+	return tokenStr, nil
 }
