@@ -8,4 +8,4 @@ It doesn't work with Postman, or with our usual browsers ... (same with TDot Cod
 
 
 Youtube: [https://www.youtube.com/watch?v=eVvUOhnn8iQ](https://www.youtube.com/watch?v=eVvUOhnn8iQ)
-![screenshot]("/screenshot.png")
+![screenshot](/screenshot.png)
