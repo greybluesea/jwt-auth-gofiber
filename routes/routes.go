@@ -19,24 +19,24 @@ func SetupRoutes(app *fiber.App) {
 	})
 
 	app.Post("/signup", func(c *fiber.Ctx) error {
-		req := new(models.SignupRequest)
-		if err := c.BodyParser(&req); err != nil {
+		signup := new(models.SignupRequest)
+		if err := c.BodyParser(&signup); err != nil {
 			return err
 		}
 
-		if req.Name == "" || req.Email == "" || req.Password == "" {
-			return fiber.NewError(fiber.StatusBadRequest, "invalid signup credentials")
+		if signup.Name == "" || signup.Email == "" || signup.Password == "" {
+			return fiber.NewError(fiber.StatusBadRequest, "invalid sign-up credentials")
 		}
 
 		// save this info in the database
-		hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+		hash, err := bcrypt.GenerateFromPassword([]byte(signup.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return err
 		}
 
 		user := models.User{
-			Name:           req.Name,
-			Email:          req.Email,
+			Name:           signup.Name,
+			Email:          signup.Email,
 			HashedPassword: string(hash),
 		}
 
@@ -45,19 +45,40 @@ func SetupRoutes(app *fiber.App) {
 			return result.Error
 		}
 
-		//fmt.Println(result)
-
 		token, exp, err := createJWTTokenSTr(&user)
 		if err != nil {
 			return err
 		}
-		// create a jwt token
 
 		return c.JSON(fiber.Map{"token": token, "exp": exp, "user": user})
 	})
 
 	app.Post("/login", func(c *fiber.Ctx) error {
-		return nil
+		login := models.LoginRequest{}
+		if err := c.BodyParser(&login); err != nil {
+			return err
+		}
+
+		if login.Email == "" || login.Password == "" {
+			return fiber.NewError(fiber.StatusBadRequest, "invalid login credentials")
+		}
+
+		user := models.User{}
+		database.DB.Find(&user, "Email = ?", login.Email)
+		if user.ID == 0 {
+			return c.Status(400).JSON("this email is not registered")
+		}
+
+		if err := bcrypt.CompareHashAndPassword([]byte(user.HashedPassword), []byte(login.Password)); err != nil {
+			return err
+		}
+
+		token, exp, err := createJWTTokenSTr(&user)
+		if err != nil {
+			return err
+		}
+
+		return c.JSON(fiber.Map{"token": token, "exp": exp, "user": user})
 	})
 
 	app.Get("/private", func(c *fiber.Ctx) error {
