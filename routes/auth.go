@@ -84,12 +84,12 @@ func SetAuthRoutes(app *fiber.App) {
 	groupAuth.Post("/login", func(c *fiber.Ctx) error {
 		login := models.LoginRequest{}
 
-		/* login.Email = c.FormValue("Email")
-		login.Password = c.FormValue("Password") */
+		login.Email = c.FormValue("Email")
+		login.Password = c.FormValue("Password")
 
-		if err := c.BodyParser(&login); err != nil {
+		/* if err := c.BodyParser(&login); err != nil {
 			return err
-		}
+		} */
 
 		if login.Email == "" || login.Password == "" {
 			return fiber.NewError(fiber.StatusBadRequest, "invalid login credentials")
@@ -123,8 +123,9 @@ func SetAuthRoutes(app *fiber.App) {
 func createJWTTokenSTr(user *models.User) (string, error) {
 
 	claims := jwt.MapClaims{
-		"name": user.Name,
-		"exp":  time.Now().Add(time.Hour * 24).Unix(),
+		"name":  user.Name,
+		"admin": true,
+		"exp":   time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	// Create a new JWT token with the HS256 signing method

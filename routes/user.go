@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"os"
+	// "os"
 
 	jwtware "github.com/gofiber/contrib/jwt"
 	"github.com/gofiber/fiber/v2"
@@ -13,7 +13,7 @@ func SetUserRoutes(app *fiber.App) {
 	userRoutes := app.Group("/user")
 
 	userRoutes.Use(jwtware.New(jwtware.Config{
-		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("SECRET"))},
+		SigningKey: jwtware.SigningKey{Key: []byte("secret")},
 	}))
 	/* userRoutes.Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{
