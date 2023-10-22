@@ -3,12 +3,24 @@
 Get http://localhost:3000/ HTTP/1.1
 
 ###
-POST http://localhost:3000/signup HTTP/1.1
+POST http://localhost:3000/auth/signup HTTP/1.1
 Content-Type: application/json
 
-###
-POST http://localhost:3000/login HTTP/1.1
-Content-Type: application/json
+{
+    "Name":"Jane",
+    "Email": "jane@email.com",
+    "Password": "jane"
+}
 
 ###
-GET http://localhost:3000/private HTTP/1.1
+POST http://localhost:3000/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+    "Email": "jane@email.com",
+    "Password": "jane"
+}
+
+###
+GET http://localhost:3000/user/me HTTP/1.1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgwNjI3ODcsIm5hbWUiOiJKYW5lIn0.jlswlZNsVANtjgsAc0_PlTqZWMc5rSMqpMi28kbHJrY

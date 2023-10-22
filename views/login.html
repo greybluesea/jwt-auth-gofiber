@@ -1,0 +1,19 @@
+<hmtl>
+  <body>
+    <main>
+      <h1>{{.Title}}</h1>
+      <form method="post" action="/auth/login">
+        <label for="email">
+          <span>Email</span>
+          <input type="text" name="Email" />
+        </label>
+        <label for="password">
+          <span>Password</span>
+          <input type="text" name="Password" />
+        </label>
+
+        <button id="delete-btn" class="delete-btn" type="submit">submit</button>
+      </form>
+    </main>
+  </body>
+</hmtl>

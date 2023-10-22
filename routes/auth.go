@@ -38,6 +38,11 @@ func SetAuthRoutes(app *fiber.App) {
 
 	groupAuth.Post("/signup", func(c *fiber.Ctx) error {
 		signup := new(models.SignupRequest)
+
+		/* signup.Email = c.FormValue("Email")
+		signup.Name = c.FormValue("Name")
+		signup.Password = c.FormValue("Password") */
+
 		if err := c.BodyParser(&signup); err != nil {
 			return err
 		}
@@ -68,16 +73,20 @@ func SetAuthRoutes(app *fiber.App) {
 			return err
 		}
 
-		/* 	c.Cookie(&fiber.Cookie{
+		/* c.Cookie(&fiber.Cookie{
 			Name:  "jwt",
 			Value: token,
 		}) */
 
-		return c.JSON(fiber.Map{"token": token})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Success signup", "token": token})
 	})
 
 	groupAuth.Post("/login", func(c *fiber.Ctx) error {
 		login := models.LoginRequest{}
+
+		/* login.Email = c.FormValue("Email")
+		login.Password = c.FormValue("Password") */
+
 		if err := c.BodyParser(&login); err != nil {
 			return err
 		}
@@ -104,9 +113,9 @@ func SetAuthRoutes(app *fiber.App) {
 		/* c.Cookie(&fiber.Cookie{
 			Name:  "jwt",
 			Value: token,
-		})
-		*/
-		return c.JSON(fiber.Map{"token": token})
+		}) */
+
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Success login", "token": token})
 	})
 
 }
