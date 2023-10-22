@@ -73,12 +73,12 @@ func SetAuthRoutes(app *fiber.App) {
 			return err
 		}
 
-		/* c.Cookie(&fiber.Cookie{
+		c.Cookie(&fiber.Cookie{
 			Name:  "jwt",
 			Value: token,
-		}) */
+		})
 
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Success signup", "token": token})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{ /* "status": "success", "message": "Sign-up success", */ "token": token})
 	})
 
 	groupAuth.Post("/login", func(c *fiber.Ctx) error {
@@ -110,12 +110,12 @@ func SetAuthRoutes(app *fiber.App) {
 			return err
 		}
 
-		/* c.Cookie(&fiber.Cookie{
+		c.Cookie(&fiber.Cookie{
 			Name:  "jwt",
 			Value: token,
-		}) */
+		})
 
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "success", "message": "Success login", "token": token})
+		return c.Status(fiber.StatusOK).JSON(fiber.Map{ /* "status": "success", "message": "Log-in success", */ "token": token})
 	})
 
 }
@@ -123,9 +123,9 @@ func SetAuthRoutes(app *fiber.App) {
 func createJWTTokenSTr(user *models.User) (string, error) {
 
 	claims := jwt.MapClaims{
-		"name":  user.Name,
-		"admin": true,
-		"exp":   time.Now().Add(time.Hour * 24).Unix(),
+		"name": user.Name,
+		//"admin": true,
+		"exp": time.Now().Add(time.Hour * 24).Unix(),
 	}
 
 	// Create a new JWT token with the HS256 signing method
