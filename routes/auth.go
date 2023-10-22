@@ -7,6 +7,9 @@ import (
 	"time"
 
 	//	"github.com/gofiber/contrib/jwt"
+	//"crypto/rand"
+	//"crypto/rsa"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/greybluesea/jwt-auth-gofiber/database"
@@ -14,7 +17,22 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+/* var (
+	// Obviously, this is just a test example. Do not do this in production.
+	// In production, you would have the private key and public key pair generated
+	// in advance. NEVER add a private key to any GitHub repo.
+	privateKey *rsa.PrivateKey
+) */
+
 func SetAuthRoutes(app *fiber.App) {
+
+	/* 	// Just as a demo, generate a new private/public key pair on each run. See note above.
+	   	rng := rand.Reader
+	   	var err error
+	   	privateKey, err = rsa.GenerateKey(rng, 2048)
+	   	if err != nil {
+	   		log.Fatalf("rsa.GenerateKey: %v", err)
+	   	} */
 
 	groupAuth := app.Group("/auth")
 
@@ -106,6 +124,13 @@ func createJWTTokenSTr(user *models.User) (string, error) {
 	// Sign the JWT token using a secret key and get the token string
 	tokenStr, err := token.SignedString([]byte(os.Getenv("SECRET")))
 
+	/* // Create token
+	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)
+
+	// Generate encoded token and send it as response.
+	tokenStr, err := token.SignedString(privateKey)
+
+	*/
 	// If there's an error while signing the token, return an error
 	if err != nil {
 		log.Fatal("token.SignedString: %w", err)

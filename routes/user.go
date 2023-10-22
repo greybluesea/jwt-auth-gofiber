@@ -12,9 +12,15 @@ func SetUserRoutes(app *fiber.App) {
 
 	userRoutes := app.Group("/user")
 
-	userRoutes.Use(jwtware.New(jwtware.Config{
+	userRoutes .Use(jwtware.New(jwtware.Config{
 		SigningKey: jwtware.SigningKey{Key: []byte(os.Getenv("SECRET"))},
 	}))
+	/* userRoutes.Use(jwtware.New(jwtware.Config{
+		SigningKey: jwtware.SigningKey{
+			JWTAlg: jwtware.RS256,
+			Key:    privateKey.Public(),
+		},
+	})) */
 
 	userRoutes.Get("/me", restricted)
 
