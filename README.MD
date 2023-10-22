@@ -1,4 +1,4 @@
-## JWT auth on GoFiber api (GORM + Postgres) - inspired by TDot Code
+## JWT auth on GoFiber api (GORM + Postgres, dockerised, MVC) - inspired by TDot Code
 
-Youtube: [https://www.youtube.com/watch?v=eVvUOhnn8iQ](https://www.youtube.com/watch?v=eVvUOhnn8iQ)
+Youtube: [https://youtu.be/dD7qZF1S9Ao](https://youtu.be/dD7qZF1S9Ao)
 ![screenshot](/screenshot.png)
