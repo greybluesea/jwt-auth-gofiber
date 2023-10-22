@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 
 <body>
+
   <h1>{{.Title}}</h1>
-    <div class="wrapper">
+  <form action="/auth/logout"  method="get">
+    <header style="display: flex; gap: 50px; margin-bottom: 30px;">
+      
+
       <a href="/">
         <span>Home</span>
       </a>
@@ -13,10 +17,10 @@
         <span>Log In</span>
       </a>
       <a href="/user/me">
-        <span>Me</span>
+        <span>About Me</span>
       </a>
-      
-    </div>
+      <button type="submit">Log Out</button>
+    </header> </form>
     {{embed}}
 </body> 
 </html>

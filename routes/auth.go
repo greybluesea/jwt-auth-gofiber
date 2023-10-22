@@ -39,14 +39,14 @@ func SetAuthRoutes(app *fiber.App) {
 	groupAuth.Post("/signup", func(c *fiber.Ctx) error {
 		signup := new(models.SignupRequest)
 
-		/* signup.Email = c.FormValue("Email")
+		signup.Email = c.FormValue("Email")
 		signup.Name = c.FormValue("Name")
-		signup.Password = c.FormValue("Password") */
+		signup.Password = c.FormValue("Password")
 
-		if err := c.BodyParser(&signup); err != nil {
+		/* if err := c.BodyParser(&signup); err != nil {
 			return err
 		}
-
+		*/
 		if signup.Name == "" || signup.Email == "" || signup.Password == "" {
 			return fiber.NewError(fiber.StatusBadRequest, "invalid sign-up credentials")
 		}
@@ -78,7 +78,9 @@ func SetAuthRoutes(app *fiber.App) {
 			Value: token,
 		})
 
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{ /* "status": "success", "message": "Sign-up success", */ "token": token})
+		return c.Status(fiber.StatusFound).Redirect("../user/me")
+
+		//	return c.Status(fiber.StatusOK).JSON(fiber.Map{ /* "status": "success", "message": "Sign-up success", */ "token": token})
 	})
 
 	groupAuth.Post("/login", func(c *fiber.Ctx) error {
@@ -115,7 +117,19 @@ func SetAuthRoutes(app *fiber.App) {
 			Value: token,
 		})
 
-		return c.Status(fiber.StatusOK).JSON(fiber.Map{ /* "status": "success", "message": "Log-in success", */ "token": token})
+		return c.Status(fiber.StatusFound).Redirect("../user/me")
+
+		//	return c.Status(fiber.StatusOK).JSON(fiber.Map{ /* "status": "success", "message": "Log-in success", */ "token": token})
+	})
+
+	groupAuth.Get("/logout", func(c *fiber.Ctx) error {
+
+		c.Cookie(&fiber.Cookie{
+			Name:    "jwt",
+			Value:   "",
+			Expires: time.Unix(0, 0), // Set the expiration time to the Unix epoch
+		})
+		return c.Status(fiber.StatusFound).Redirect("../user/me")
 	})
 
 }
@@ -125,7 +139,7 @@ func createJWTTokenSTr(user *models.User) (string, error) {
 	claims := jwt.MapClaims{
 		"name": user.Name,
 		//"admin": true,
-		"exp": time.Now().Add(time.Hour * 24).Unix(),
+		"exp": time.Now().Add(time.Minute * 5).Unix(),
 	}
 
 	// Create a new JWT token with the HS256 signing method
