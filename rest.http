@@ -1,6 +1,6 @@
 
-
-Get http://localhost:3000/ HTTP/1.1
+###
+Get http://localhost:3000/  HTTP/1.1       
 
 ###
 POST http://localhost:3000/auth/signup HTTP/1.1
@@ -23,4 +23,4 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3000/user/me HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgwNjI3ODcsIm5hbWUiOiJKYW5lIn0.jlswlZNsVANtjgsAc0_PlTqZWMc5rSMqpMi28kbHJrY
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2OTgwNjk4OTcsIm5hbWUiOiJKYW5lIn0.6ZzWWdNJot-AkmuP2ZOQiY72RSC1U9Z0GWTlCUa5LDA

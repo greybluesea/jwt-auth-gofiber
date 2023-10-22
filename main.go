@@ -36,7 +36,7 @@ func main() {
 
 	routes.SetAuthRoutes(app)
 	routes.SetUserRoutes(app)
-	routes.SetSigninRoutes(app)
+	//	routes.SetSigninRoutes(app)
 
 	log.Fatal(app.Listen(":3000"))
 
