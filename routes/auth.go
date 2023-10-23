@@ -74,8 +74,11 @@ func SetAuthRoutes(app *fiber.App) {
 		}
 
 		c.Cookie(&fiber.Cookie{
-			Name:  "jwt",
-			Value: token,
+			Name:     "jwt",
+			Value:    token,
+			HTTPOnly: true,
+			Expires:  time.Now().Add(7 * 24 * time.Hour),
+			Secure:   true,
 		})
 
 		return c.Status(fiber.StatusFound).Redirect("../user/me")
@@ -113,8 +116,11 @@ func SetAuthRoutes(app *fiber.App) {
 		}
 
 		c.Cookie(&fiber.Cookie{
-			Name:  "jwt",
-			Value: token,
+			Name:     "jwt",
+			Value:    token,
+			HTTPOnly: true,
+			Expires:  time.Now().Add(7 * 24 * time.Hour),
+			Secure:   true,
 		})
 
 		return c.Status(fiber.StatusFound).Redirect("../user/me")
